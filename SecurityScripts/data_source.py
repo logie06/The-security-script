@@ -1,4 +1,6 @@
 import csv
+import os
+from SecurityScripts.config_server import start_http_server
 
 
 class DataSourceInput:
@@ -24,12 +26,24 @@ class DataSourceInput:
 
     @staticmethod
     def read_config_file():
-        with open('Configuration.csv', 'r') as file:
-            csv_reader = csv.reader(file)
-            rows = list(csv_reader)
-            domain_names = [row[1] for row in rows[1:1]]
-            ip_ranges = [row[1] for row in rows[2:2]]
-            ip_addresses = [row[1] for row in rows[3:3]]
-            email_addresses = [row[1] for row in rows[4:4]]
+        config_dir = os.path.dirname(os.path.dirname(__file__))
+        file_name = 'Configuration.csv'
 
-        return domain_names, ip_ranges, ip_addresses, email_addresses
+        file_path = os.path.join(config_dir, file_name)
+
+        if os.path.isfile(file_path):
+            with open(file_path, 'r') as file:
+                csv_reader = csv.reader(file)
+                rows = list(csv_reader)
+                domain_names = [row[1] for row in rows[1:2]]
+                ip_ranges = [row[1] for row in rows[2:3]]
+                ip_addresses = [row[1] for row in rows[3:4]]
+                email_addresses = [row[1] for row in rows[4:5]]
+            read_stat = '[#]Success!'
+            return domain_names, ip_ranges, ip_addresses, email_addresses, read_stat
+        else:
+            read_stat = '[#]Failed'
+            return read_stat
+
+
+
